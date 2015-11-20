@@ -46,7 +46,24 @@
          (into explored neighbors)
          (into (pop queue) new-neighbors))))))
 
+(defn farness [g s]
+  (reduce-kv #(+ %1 %3) 0 (distance-to-all-nodes g s)))
 
+(defn closeness [g s]
+  (/ 1 (farness g s)))
+
+(defn nodes-closeness [g]
+  (reduce-kv (fn [ranking key _]
+               (assoc ranking key (closeness g key)))
+             (sorted-map)
+             g))
+
+(defn closeness-sorted-nodes [g]
+  (let [unsorted-nodes (nodes-closeness g)]
+    (into (sorted-map-by (fn [key1 key2]
+                           (compare [(unsorted-nodes key2) key2]
+                                    [(unsorted-nodes key1) key1])))
+          unsorted-nodes)))
 
 (defn -main
   "I don't do a whole lot ... yet."
