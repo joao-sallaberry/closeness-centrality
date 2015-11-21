@@ -29,6 +29,11 @@
 (def graph (add-edges-from-lines (read-lines edges-file)
                                  (sorted-map)))
 
+(defn rest-add-edge [n1 n2]
+  (def graph (add-edge graph [(keyword (str n1))
+                              (keyword (str n2))]))
+  {:message "done!"})
+
 (defn distance-to-all-nodes [g s]
   "Runs BFS to find the distance from s to all other nodes"
   (loop [distances {s 0}
