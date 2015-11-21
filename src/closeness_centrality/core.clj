@@ -4,31 +4,30 @@
 (use 'clojure.java.io)
 (require '[clojure.string :as str])
 
-(defn read-lines []
+(def edges-file "resources/simple-test.txt")
+
+(defn read-lines [file]
   "Read lines from file"
   (map (fn [line]
-         (str/split line #" "))
-       (str/split (slurp "resources/simple-test.txt") #"\r?\n")))
+         (map keyword (str/split line #" ")))
+       (str/split (slurp file) #"\r?\n")))
 
-(defn mirror-edges [lines]
-  (into
-   (map (fn [[n1 n2]]
-          (vector (keyword n1) (keyword n2)))
-        lines)
-   (map (fn [[n1 n2]]
-          (vector (keyword n2) (keyword n1)))
-        lines)))
+(defn add-directed-edge [graph edge]
+  (let [[n1 n2] edge]
+    (if (contains? graph n1)
+              (assoc graph n1 (conj (n1 graph) n2))
+              (assoc graph n1 [n2]))))
 
-(defn add-edges-to-graph [edges graph]
-  (reduce (fn [g [n1 n2]]
-            (if (contains? g n1)
-              (assoc g n1 (conj (n1 g) n2))
-              (assoc g n1 [n2])))
-          graph
-   edges))
+(defn add-edge [graph edge]
+  (let [[n1 n2] edge]
+    (add-directed-edge 
+     (add-directed-edge graph [n1 n2]) [n2 n1])))
 
-(def graph (add-edges-to-graph (mirror-edges (read-lines))
-                               (sorted-map)))
+(defn add-edges-from-lines [edges graph]
+  (reduce add-edge graph edges))
+
+(def graph (add-edges-from-lines (read-lines edges-file)
+                                 (sorted-map)))
 
 (defn distance-to-all-nodes [g s]
   "Runs BFS to find the distance from s to all other nodes"
