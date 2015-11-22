@@ -8,7 +8,7 @@
 ;; Schemas
 ;;
 (s/defschema Message {:message String})
-
+(s/defschema Pizza Message)
 ;;
 ;; Methods
 ;;
@@ -24,7 +24,7 @@
   (context* "/api" []
     :tags ["closeness centrality"]
 
-    (GET* "/rank" []
+    (GET* "/rank" [] ; TODO: change to include fraud
       :query-params []
       :summary      "Return closeness ranking of edges"
       (ok (cc/closeness-sorted-nodes cc/graph)))
@@ -34,4 +34,11 @@
       :query-params [n1 :- Long, n2 :- Long]
       :summary      "Add an edge to the graph connecting nodes n1 and n2"
       (ok (cc/rest-add-edge n1 n2)))
+
+    (PUT* "/flag/:node" []
+      :return Message
+      :path-params [node :- s/Int]
+      :summary "Flags node as fraudulent"
+      (ok (cc/rest-flag-fraudulent cc/graph
+                                   (keyword (str node)))))
 ))
