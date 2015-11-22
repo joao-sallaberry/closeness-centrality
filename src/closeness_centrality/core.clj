@@ -34,11 +34,11 @@
   (add-edges-to-graph (read-lines edges-file)
                                  (sorted-map)))
 
-(defn rest-add-edge [n1 n2]
+(defn web-add-edge [n1 n2]
   "Endpoint for adding edges to the graph"
   (def graph (add-edge graph [(keyword (str n1))
                               (keyword (str n2))]))
-  {:message "done!"})
+  {:message (str "edge " n1 "<->" n2 " successfully added")})
 
 (defn distance-to-all-nodes [graph s]
   "BFS to find the distance from s to all other nodes"
@@ -73,14 +73,14 @@
 
 (def fraudulent "List of fraudulent nodes" #{:5})
 
-(defn rest-flag-fraudulent [graph node]
+(defn web-flag-fraudulent [graph node]
   "Endpoint for flagging nodes as fraudulent"
-  (if (contains? graph node)
-    (do
-      (def fraudulent (conj fraudulent node))
-      {:message (str "node '" (name node)
-                     "' flagged as fraudulent")})
-    {:message (str "node '"(name node) "' does not exist")}))
+  (let [n (keyword (str node))]
+    (if (contains? graph n)
+      (do
+        (def fraudulent (conj fraudulent n))
+        {:message (str "node " node " flagged as fraudulent")})
+      {:message (str "node " node " does not exist")})))
 
 (defn f-factor [k]
   "Find coefficient F(k) = (1 - (1/2)^k)"
@@ -112,6 +112,11 @@
                          (compare [(in-map key2) key2]
                                   [(in-map key1) key1])))
         in-map))
+
+(defn web-rank-nodes [graph]
+  "Endpoint listing nodes orded by score"
+  (map #(hash-map :node (first %) :score (second %))
+       (sort-map-by-value (final-score graph))))
 
 (defn -main
   "I don't do a whole lot ... yet."
