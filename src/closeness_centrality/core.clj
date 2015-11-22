@@ -38,7 +38,7 @@
   "Endpoint for adding edges to the graph"
   (def graph (add-edge graph [(keyword (str n1))
                               (keyword (str n2))]))
-  {:message (str "edge " n1 "<->" n2 " successfully added")})
+  {:message (str "edge " n1 " <-> " n2 " successfully added")})
 
 (defn distance-to-all-nodes [graph s]
   "BFS to find the distance from s to all other nodes"
