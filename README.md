@@ -1,6 +1,6 @@
 # Closeness Centrality
 
-Web App for ranking nodes in a social network based on closeness centrality and fraud.
+Web App for ranking nodes in a social network based on [closeness centrality] (https://en.wikipedia.org/wiki/Centrality#Closeness_centrality) and fraud.
 
 ## Challenge Description:
 
@@ -21,7 +21,15 @@ The third and final part is to add another endpoint to flag a customer node as "
 
 where k is the length of the shortest path from the "fraudulent" customer to the customer in question.
 
-*In the implementation, vertices are referred to as nodes*
+## Implementation
+
+*In the implementation, vertices are referred to as nodes.*
+
+Since the graph is unweighted and undirected, all-pairs shortest path was found using breadth-first search (bfs) from every node, resulting in time complexity of O(NE + N²), being N the number of nodes and E the number of edges.
+
+BFS was also used to calculate coefficient F for nodes flagged as fraudulent.
+
+The RESTful server was made with the help of [Composure API] (https://github.com/metosin/compojure-api).
 
 ## Installation
 
@@ -41,7 +49,7 @@ Download from https://github.com/joao-sallaberry/closeness-centrality.
 
 ## Endpoints
 
-- GET /api/rank - Return list of JSON 
+- **GET /api/rank** - Return list of JSON 
 
     [ { "node": "2", "score": 0.04136029411764706 },
       { "node": "8", "score": 0.04029605263157895 },
@@ -49,11 +57,11 @@ Download from https://github.com/joao-sallaberry/closeness-centrality.
       { "node": "3", "score": 0.03860294117647059 },
       ... ]
 
-- PUT /api/edge/{n1}/{n2} - Add an edge connecting nodes n1 and n2
+- **PUT /api/edge/{n1}/{n2}** - Add an edge connecting nodes n1 and n2
 
     { "message": "edge 3 <-> 1 successfully added" }
 
-- PUT /api/flag/{node} - Flag node as fraudulent
+- **PUT /api/flag/{node}** - Flag node as fraudulent
 
     { "message": "node 1 flagged as fraudulent" }
 
