@@ -39,5 +39,5 @@
       :return       Message
       :path-params  [node :- s/Int]
       :summary      "Flag node as fraudulent"
-      (ok (cc/web-flag-fraudulent cc/graph node)))
+      (ok (cc/web-flag-fraudulent node)))
 ))

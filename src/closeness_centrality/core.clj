@@ -1,11 +1,13 @@
 (ns closeness-centrality.core
   (:gen-class))
 
-(use 'clojure.java.io)
 (require '[clojure.string :as str])
 
-(def edges-file "resources/simple-test.txt")
-;(def edges-file "resources/edges.txt")
+;;
+;; Reading file to graph
+;;
+(def edges-file "resources/edges.txt")
+;(def edges-file "resources/simple-test.txt")
 
 (defn read-lines [file]
   "Read lines of edges from file"
@@ -34,12 +36,9 @@
   (add-edges-to-graph (read-lines edges-file)
                                  (sorted-map)))
 
-(defn web-add-edge [n1 n2]
-  "Endpoint for adding edges to the graph"
-  (def graph (add-edge graph [(keyword (str n1))
-                              (keyword (str n2))]))
-  {:message (str "edge " n1 " <-> " n2 " successfully added")})
-
+;;
+;; Find closeness of nodes
+;;
 (defn distance-to-all-nodes [graph s]
   "BFS to find the distance from s to all other nodes"
   (loop [distances {s 0}
@@ -71,16 +70,10 @@
              (sorted-map)
              graph))
 
-(def fraudulent "List of fraudulent nodes" #{:5})
-
-(defn web-flag-fraudulent [graph node]
-  "Endpoint for flagging nodes as fraudulent"
-  (let [n (keyword (str node))]
-    (if (contains? graph n)
-      (do
-        (def fraudulent (conj fraudulent n))
-        {:message (str "node " node " flagged as fraudulent")})
-      {:message (str "node " node " does not exist")})))
+;;
+;; Calculate scores based on frauds
+;;
+(def fraudulent "List of fraudulent nodes" #{})
 
 (defn f-factor [k]
   "Find coefficient F(k) = (1 - (1/2)^k)"
@@ -89,7 +82,7 @@
 
 (defn apply-factors-to-scores [scores factors]
   "Multiply every value in scores by its correspondent in factors"
-  (reduce-kv ; map??
+  (reduce-kv
    (fn [scores n score]
      (assoc scores n (* (scores n) score)))
    scores
@@ -106,6 +99,9 @@
           (nodes-closeness graph)
           fraudulent))
 
+;;
+;; Helper functions
+;;
 (defn sort-map-by-value [in-map]
   "Sort a map by value"
   (into (sorted-map-by (fn [key1 key2]
@@ -113,13 +109,25 @@
                                   [(in-map key1) key1])))
         in-map))
 
+;;
+;; Web Endpoints
+;;
+(defn web-add-edge [n1 n2]
+  "Endpoint for adding edges to the graph"
+  (def graph (add-edge graph [(keyword (str n1))
+                              (keyword (str n2))]))
+  {:message (str "edge " n1 " <-> " n2 " successfully added")})
+
+(defn web-flag-fraudulent [node]
+  "Endpoint for flagging nodes as fraudulent"
+  (let [n (keyword (str node))]
+    (if (contains? graph n)
+      (do
+        (def fraudulent (conj fraudulent n))
+        {:message (str "node " node " flagged as fraudulent")})
+      {:message (str "node " node " does not exist")})))
+
 (defn web-rank-nodes [graph]
   "Endpoint listing nodes orded by score"
   (map #(hash-map :node (first %) :score (second %))
        (sort-map-by-value (final-score graph))))
-
-(defn -main
-  "I don't do a whole lot ... yet."
-  [& args]
-  (sort-map-by-value (final-score graph))
-  )
