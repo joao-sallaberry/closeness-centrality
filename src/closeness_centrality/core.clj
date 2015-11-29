@@ -6,8 +6,8 @@
 ;;
 ;; Reading file to graph
 ;;
-(def edges-file "resources/edges.txt")
-;(def edges-file "resources/simple-test.txt")
+;(def edges-file "resources/edges.txt")
+(def edges-file "resources/simple-test.txt")
 
 (defn read-lines [file]
   "Read lines of edges from file"
@@ -33,8 +33,8 @@
   (reduce add-edge graph edges))
 
 (def graph "Graph generated from edges-file"
-  (add-edges-to-graph (read-lines edges-file)
-                                 (sorted-map)))
+  (atom (add-edges-to-graph (read-lines edges-file)
+                            (sorted-map))))
 
 ;;
 ;; Find closeness of nodes
@@ -73,7 +73,7 @@
 ;;
 ;; Calculate scores based on frauds
 ;;
-(def fraudulent "List of fraudulent nodes" #{})
+(def fraudulent "List of fraudulent nodes" (atom #{}))
 
 (defn f-factor [k]
   "Find coefficient F(k) = (1 - (1/2)^k)"
@@ -97,7 +97,7 @@
                         {}
                         (distance-to-all-nodes graph fraud))))
           (nodes-closeness graph)
-          fraudulent))
+          @fraudulent))
 
 ;;
 ;; Helper functions
@@ -114,16 +114,15 @@
 ;;
 (defn web-add-edge [n1 n2]
   "Endpoint for adding edges to the graph"
-  (def graph (add-edge graph [(keyword (str n1))
-                              (keyword (str n2))]))
+  (swap! graph add-edge [(keyword (str n1)) (keyword (str n2))])
   {:message (str "edge " n1 " <-> " n2 " successfully added")})
 
 (defn web-flag-fraudulent [node]
   "Endpoint for flagging nodes as fraudulent"
   (let [n (keyword (str node))]
-    (if (contains? graph n)
+    (if (contains? @graph n)
       (do
-        (def fraudulent (conj fraudulent n))
+        (swap! fraudulent conj n)
         {:message (str "node " node " flagged as fraudulent")})
       {:message (str "node " node " does not exist")})))
 

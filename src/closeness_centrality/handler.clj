@@ -27,7 +27,7 @@
     (GET* "/rank" []
       :query-params []
       :summary      "Return closeness ranking of edges"
-      (ok (cc/web-rank-nodes cc/graph)))
+      (ok (cc/web-rank-nodes @cc/graph)))
 
     (PUT* "/edge/:n1/:n2" []
       :return       Message
