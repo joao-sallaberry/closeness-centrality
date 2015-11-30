@@ -8,8 +8,10 @@
                  [metosin/compojure-api "0.22.0"]]
   :ring {:handler web-api.handler/app}
   :uberjar-name "server.jar"
-  :profiles {:dev {:dependencies [[javax.servlet/servlet-api "2.5"]]
-                   :plugins [[lein-ring "0.9.6"]]}})
+  :profiles {:dev {:dependencies [[javax.servlet/servlet-api "2.5"]
+                                  [midje "1.6.3"]]
+                   :plugins [[lein-ring "0.9.6"]
+                             [lein-midje "3.1.3"]]}})
 
 
 ;  :main ^:skip-aot closeness-centrality.core

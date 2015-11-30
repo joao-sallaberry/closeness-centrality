@@ -21,7 +21,7 @@
   (let [[n1 n2] edge]
     (if (contains? graph n1)
               (assoc graph n1 (conj (n1 graph) n2))
-              (assoc graph n1 [n2]))))
+              (assoc graph n1 #{n2}))))
 
 (defn add-edge [graph edge]
   "Add edge to graph in both directions"
@@ -29,10 +29,10 @@
     (add-directed-edge 
      (add-directed-edge graph [n1 n2]) [n2 n1])))
 
-(defn add-edges-to-graph [edges graph]
+(defn add-edges-to-graph [graph edges]
   "Add a list of edges to graph"
   (reduce add-edge graph edges))
 
 (def graph "Graph generated from edges-file"
-  (atom (add-edges-to-graph (read-lines edges-file)
-                            (sorted-map))))
+  (atom (add-edges-to-graph (sorted-map)
+                            (read-lines edges-file))))

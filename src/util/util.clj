@@ -1,4 +1,4 @@
-(ns closeness-centrality.util)
+(ns util.util)
 
 ;;
 ;; Helper funcions

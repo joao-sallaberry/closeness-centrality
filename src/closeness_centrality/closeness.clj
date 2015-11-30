@@ -26,7 +26,11 @@
 
 (defn closeness [graph node]
   "Closeness value of node"
-  (/ 1 (farness graph node)))
+  (let [f (farness graph node)]
+    (if (= f 0)
+      (throw (Exception.
+              (str "Node " node " cannot reach any node")) )
+      (/ 1 f))))
 
 (defn nodes-closeness [graph]
   "Closeness value of each node in graph"

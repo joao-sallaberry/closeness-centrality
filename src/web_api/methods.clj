@@ -1,7 +1,7 @@
 (ns web-api.methods
   (:require [closeness-centrality.graph-generation :as gph]
             [closeness-centrality.score :as score]
-            [closeness-centrality.util :as util]))
+            [util.util :as util]))
 
 ;;
 ;; Services to handle the social network
@@ -25,4 +25,6 @@
 (defn rank-nodes []
   "Endpoint listing nodes orded by score"
   (map #(hash-map :node (first %) :score (second %))
-       (util/sort-map-by-value (score/final-score @gph/graph))))
+       (util/sort-map-by-value (score/final-score
+                                @gph/graph
+                                @score/fraudulent))))

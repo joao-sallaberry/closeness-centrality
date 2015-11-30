@@ -20,7 +20,7 @@
    scores
    factors))
 
-(defn final-score [graph]
+(defn final-score [graph fraudulent]
   "Final score of every node considering fraud"
   (reduce (fn [scores fraud]
             (apply-factors-to-scores
@@ -29,4 +29,4 @@
                         {}
                         (cls/distance-to-all-nodes graph fraud))))
           (cls/nodes-closeness graph)
-          @fraudulent))
+          fraudulent))
