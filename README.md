@@ -65,6 +65,10 @@ Download from https://github.com/joao-sallaberry/closeness-centrality.
 
     { "message": "node 1 flagged as fraudulent" }
 
+## Tests
+
+   *lein midje* will run all tests.
+
 ## License
 
 Copyright © 2015
