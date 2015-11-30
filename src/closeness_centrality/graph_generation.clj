@@ -7,8 +7,8 @@
 ;; Generate graph from file
 ;;
 
-;(def edges-file "resources/edges.txt")
-(def edges-file "resources/simple-test.txt")
+(def edges-file "resources/edges.txt")
+;(def edges-file "resources/simple-test.txt")
 
 (defn read-lines [file]
   "Read lines of edges from file"
